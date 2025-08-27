@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FCH Number Guess Game</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+    .card {
+      position: relative;
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px auto;
+      width: 300px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.12; /* faint watermark */
+      width: 200px;
+      z-index: 0;
+    }
+    .content {
+      position: relative;
+      z-index: 1;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔢 FCH Number Guess Game</h1>
+  <div id="game"></div>
+
+  <script>
+    const sets = [];
+    for (let i = 0; i < 7; i++) {
+      const set = [];
+      for (let n = 1; n <= 100; n++) {
+        if ((n >> i) & 1) set.push(n);
+      }
+      sets.push(set);
+    }
+
+    let step = 0;
+    let number = 0;
+    const gameDiv = document.getElementById("game");
+
+    function showStep() {
+      if (step < sets.length) {
+        gameDiv.innerHTML = `
+          <div class="card">
+            <img src="assets/logo.png" class="watermark">
+            <div class="content">
+              <p>Is your number in this set?</p>
+              <p>${sets[step].join(", ")}</p>
+              <button onclick="yes()">Yes</button>
+              <button onclick="no()">No</button>
+            </div>
+          </div>`;
+      } else {
+        gameDiv.innerHTML = `
+          <div class="card">
+            <img src="assets/logo.png" class="watermark">
+            <div class="content">
+              <h2>Your number is: ${number}</h2>
+              <button onclick="restart()">Play Again</button>
+            </div>
+          </div>`;
+      }
+    }
+
+    function yes() {
+      number += 1 << step;
+      step++;
+      showStep();
+    }
+    function no() {
+      step++;
+      showStep();
+    }
+    function restart() {
+      step = 0; number = 0; showStep();
+    }
+
+    showStep();
+  </script>
+</body>
+</html>
